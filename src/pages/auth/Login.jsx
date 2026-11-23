@@ -14,7 +14,7 @@ import {
     Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import api from "../../services/api";
+import authService from "../../services/authService";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
@@ -40,24 +40,51 @@ function Login() {
     setError("");
 
     try {
-        const response = await api.post("/login/", formData);
-
-        console.log(response.data);
+        const response = await authService.login(formData);
 
         if (response.data.success) {
-            localStorage.setItem("access", response.data.access);
-            localStorage.setItem("refresh", response.data.refresh);
+            const { access, refresh } = response.data.tokens || response.data;
+            if (
+                typeof access !== "string" ||
+                !access.trim() ||
+                access === "undefined" ||
+                typeof refresh !== "string" ||
+                !refresh.trim() ||
+                refresh === "undefined"
+            ) {
+                throw new Error(
+                    "Login response did not include valid access and refresh tokens."
+                );
+            }
+
+            localStorage.setItem("access", access);
+            localStorage.setItem("refresh", refresh);
+            const user =
+                response.data.user && typeof response.data.user === "object"
+                    ? response.data.user
+                    : {
+                        id: response.data.user_id,
+                        email: response.data.email,
+                    };
             localStorage.setItem(
                 "user",
-                JSON.stringify(response.data.user)
+                JSON.stringify({
+                    ...user,
+                    role: user.role || response.data.role || formData.role,
+                })
             );
 
             // Redirect to Home page
             navigate("/");
+        } else {
+            throw new Error(response.data.message || "Login failed.");
         }
     } catch (error) {
         setError(
-            error.response?.data?.message || "Invalid email or password."
+            error.response?.data?.message ||
+                error.response?.data?.detail ||
+                error.message ||
+                "Invalid email or password."
         );
     }
 };

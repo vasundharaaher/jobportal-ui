@@ -17,7 +17,7 @@ import HandshakeIcon from "@mui/icons-material/Handshake";
 import SchoolIcon from "@mui/icons-material/School";
 import BrushIcon from "@mui/icons-material/Brush";
 
-import api from "../services/api";
+import jobService from "../services/jobService";
 
 // Map category names to icons
 const iconMap = {
@@ -51,7 +51,7 @@ function CategorySection() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await api.get("/index/");
+        const response = await jobService.getCategories();
 
         const categoryArray = Object.entries(response.data.categories).map(
           ([title, jobs]) => ({

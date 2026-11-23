@@ -1,33 +1,13 @@
-import { useEffect, useState } from "react";
 import {
   Box,
   Container,
   Typography,
 } from "@mui/material";
 
-import api from "../services/api";
 import AllJob from "../components/AllJob";
 import Layout from "../components/Layout";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
 
 function JobListPage() {
-    const [jobs, setJobs] = useState([]);
-    const fetchJobs = async () => {
-        try {
-        const res = await api.get("/jobs/");
-        setJobs(res.data);
-        } catch (err) {
-        console.log(err);
-        }
-    };
-
-    useEffect(() => {
-        fetchJobs();
-    }, []);
-
- 
-
   return (
     <Layout>
     

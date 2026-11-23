@@ -17,22 +17,35 @@ import {
   LocationOn,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import api from "../services/api";
+import jobService from "../services/jobService";
+import candidateService from "../services/candidateService";
 
-function AllJob() {
+function AllJob({ audience = "public" }) {
     const [jobs, setJobs] = useState([]);
-    const fetchJobs = async () => {
-        try {
-        const res = await api.get("/jobs/");
-        setJobs(res.data);
-        } catch (err) {
-        console.log(err);
-        }
-    };
 
     useEffect(() => {
+        let isMounted = true;
+
+        const fetchJobs = async () => {
+            try {
+                const jobs =
+                    audience === "candidate"
+                        ? await candidateService.getJobs()
+                        : await jobService.getJobs();
+                if (isMounted) {
+                    setJobs(jobs);
+                }
+            } catch (error) {
+                console.error("Error fetching jobs:", error);
+            }
+        };
+
         fetchJobs();
-    }, []);
+
+        return () => {
+            isMounted = false;
+        };
+    }, [audience]);
 
  
 
@@ -59,17 +72,20 @@ function AllJob() {
       </Box> */}
 
       {/* Jobs */}
-      <Container maxWidth="lg" sx={{ py: 6 }}>
+    <Container maxWidth="lg" sx={{ py: 6 }}>
+      
+      {jobs.length === 0 ? (
         <Typography
-          variant="h4"
+          variant="h5"
           fontWeight="bold"
           align="center"
-          mb={5}
+          color="#122041"
+          mt={5}
         >
-          Job Listing
+          No jobs found
         </Typography>
-
-        {jobs.map((job) => (
+      ) : (
+        jobs.map((job) => (
           <Card
             key={job.id}
             sx={{
@@ -82,9 +98,8 @@ function AllJob() {
               },
             }}
           >
-            <CardContent>
+          <CardContent>
               <Grid container spacing={3} alignItems="center">
-
                 {/* Left */}
                 <Grid size={{ xs: 12, md: 8 }}>
                   <Stack direction="row" spacing={3}>
@@ -181,8 +196,9 @@ function AllJob() {
               </Grid>
             </CardContent>
           </Card>
-        ))}
-      </Container>
+        ))
+      )}
+    </Container>
     </>
   );
 }

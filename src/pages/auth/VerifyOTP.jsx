@@ -1,6 +1,6 @@
 
 import { useLocation, useNavigate } from "react-router-dom";
-import api from "../../services/api";
+import authService from "../../services/authService";
 // import "./VerifyOTP.css";
 import { useState } from "react";
 import {
@@ -68,7 +68,7 @@ function VerifyOTP() {
         if (!validate()) return;
 
         try {
-            const response = await api.post("/verify-otp/", {
+            await authService.verifyOtp({
                 email,
                 otp: formData.otp,
             });
