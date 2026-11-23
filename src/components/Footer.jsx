@@ -17,11 +17,7 @@ function Footer() {
                 </Typography>
 
                 <Typography>
-                    +91-762xxxxxx
-                </Typography>
-
-                <Typography>
-                    vasundharaaher55@gmail.com
+                    Developer: vasundharaaher55@gmail.com
                 </Typography>
 
                 <Typography

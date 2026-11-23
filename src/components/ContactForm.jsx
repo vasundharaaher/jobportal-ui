@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import {
+  Alert,
   Button,
   Container,
   Grid,
@@ -8,6 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import api from "../services/api";
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -17,6 +19,9 @@ export default function ContactForm() {
     message: "",
   });
 
+  const [msg, setMsg] = useState({ type: "", text: "" });
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -24,12 +29,28 @@ export default function ContactForm() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setMsg({ type: "", text: "" });
+    setLoading(true);
 
-    console.log(formData);
-
-    // Call API here
+    try {
+      const response = await api.post("/contact-us/", formData);
+      if (response.data.success) {
+        setMsg({ type: "success", text: response.data.message });
+        // Reset form on success
+        setFormData({ name: "", email: "", subject: "", message: "" });
+      } else {
+        setMsg({ type: "error", text: response.data.message });
+      }
+    } catch (error) {
+      setMsg({
+        type: "error",
+        text: error.response?.data?.message || "Failed to send message. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -56,7 +77,7 @@ export default function ContactForm() {
           component="form"
           onSubmit={handleSubmit}
         >
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={12}>
             <TextField
               fullWidth
               label="Your Name"
@@ -66,7 +87,7 @@ export default function ContactForm() {
             />
           </Grid>
 
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={12}>
             <TextField
               fullWidth
               label="Your Email"
@@ -91,7 +112,7 @@ export default function ContactForm() {
             <TextField
               fullWidth
               multiline
-              rows={6}
+              rows={2}
               label="Message"
               name="message"
               value={formData.message}
@@ -99,11 +120,18 @@ export default function ContactForm() {
             />
           </Grid>
 
+          {msg.text && (
+            <Grid size={12}>
+              <Alert severity={msg.type}>{msg.text}</Alert>
+            </Grid>
+          )}
+
           <Grid size={12}>
             <Button
               fullWidth
               type="submit"
               variant="contained"
+              disabled={loading}
               sx={{
                 py: 1.5,
                 backgroundColor: "#2aba79",
@@ -112,7 +140,7 @@ export default function ContactForm() {
                 },
               }}
             >
-              Send Message
+              {loading ? "Sending..." : "Send Message"}
             </Button>
           </Grid>
         </Grid>

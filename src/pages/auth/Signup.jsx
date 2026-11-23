@@ -1,6 +1,6 @@
 import { useState } from "react";
 // import "./Signup.css";
-import api from "../../services/api";
+import authService from "../../services/authService";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -92,7 +92,7 @@ function Signup() {
     if (!validate()) return;
 
     try {
-      const response = await api.post("/register/", formData);
+      const response = await authService.register(formData);
 
       if (response.data.success) {
         navigate("/verify-otp", {

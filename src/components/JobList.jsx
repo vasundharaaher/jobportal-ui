@@ -20,7 +20,7 @@ import {
   FavoriteBorder,
 } from "@mui/icons-material";
 import { useState, useEffect } from "react";
-import api from "../services/api"; //
+import jobService from "../services/jobService";
 
 
 function JobList() {
@@ -28,8 +28,8 @@ function JobList() {
   useEffect(() => {
   const fetchJobs = async () => {
     try {
-      const response = await api.get("/index/");
-      setJobs(response.data.jobs);
+      const jobs = await jobService.getJobs();
+      setJobs(jobs);
     } catch (error) {
       console.error("Error fetching jobs:", error);
     }
@@ -60,8 +60,19 @@ function JobList() {
         <Tab label="Full Time" />
         <Tab label="Part Time" />
       </Tabs>
-
-      {jobs.map((job) => (
+ {jobs.length === 0 ? (
+        <Typography
+          variant="h5"
+          fontWeight="bold"
+          align="center"
+          color="#122041"
+          mt={5}
+        >
+          No jobs found
+        </Typography>
+      ) : 
+      
+      jobs.map((job) => (
         <Card
           key={job.id}
           elevation={3}
@@ -155,6 +166,8 @@ function JobList() {
                   </Button>
 
                   <Button
+                    component={Link}
+                    to={`/apply/${job.id}`}
                     variant="contained"
                     sx={{
                       background: "#2aba79",

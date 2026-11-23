@@ -13,9 +13,9 @@ import about4 from "../assets/images/aboutus/about-4.jpg";
 
 function AboutUs() {
   return (
-  
+
     <Container sx={{ py: 8 }} id="about">
-      <Grid container spacing={6} alignItems="center">
+      <Grid container spacing={6} sx={{ alignItems: "center" }}>
 
         {/* Left Side Images */}
         <Grid size={{ xs: 12, md: 6 }}>
@@ -101,9 +101,7 @@ function AboutUs() {
           ].map((item, index) => (
             <Box
               key={index}
-              display="flex"
-              alignItems="center"
-              mb={2}
+              sx={{ display: "flex", alignItems: "center", mb: 2 }}
             >
               <CheckCircleIcon
                 sx={{
@@ -119,7 +117,7 @@ function AboutUs() {
 
       </Grid>
     </Container>
-   
+
   );
 }
 

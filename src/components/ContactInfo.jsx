@@ -13,19 +13,19 @@ import PhoneIcon from "@mui/icons-material/Phone";
 
 const contactInfo = [
   {
-    icon: <LocationOnIcon  sx= {{color:"#3ae296" ,fontSize: 40}} />,
+    icon: <LocationOnIcon sx={{ color: "#3ae296", fontSize: 40 }} />,
     title: "Address",
     value: "Pune, Maharashtra, India",
   },
   {
-    icon: <EmailIcon  sx= {{color:"#3ae296" , fontSize: 40 }} />,
+    icon: <EmailIcon sx={{ color: "#3ae296", fontSize: 40 }} />,
     title: "Email",
     value: "skillscouter@gmail.com",
   },
   {
-    icon: <PhoneIcon sx= {{color:"#3ae296" , fontSize: 40}} />,
+    icon: <PhoneIcon sx={{ color: "#3ae296", fontSize: 40 }} />,
     title: "Phone",
-    value: "+91 9876543210",
+    value: "+91 9999999999",
   },
 ];
 
